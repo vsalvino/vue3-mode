@@ -239,6 +239,5 @@ To be formatted with the tag name.")
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.vue" . vue3-mode))
 
-(provide 'vue-mode)
 (provide 'vue3-mode)
 ;;; vue3-mode.el ends here
