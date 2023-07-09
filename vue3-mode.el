@@ -1,4 +1,4 @@
-;;; vue3-mode.el --- Syntax highlighting for modern Vue.js 3
+;;; vue3-mode.el --- Syntax highlighting for modern Vue.js 3 -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2023, Vince Salvino
 
