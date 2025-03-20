@@ -4,7 +4,7 @@
 
 ;; Author: Vince Salvino <mvsalvino@gmail.com>
 ;; Keywords: languages, vue
-;; Package-Requires: ((polymode) (vue-html-mode))
+;; Package-Requires: ((emacs "24.1") (polymode "0.2.2") (vue-html-mode "0.2"))
 ;; URL: https://github.com/vsalvino/vue3-mode
 ;; Version: 1.0
 
@@ -50,7 +50,7 @@
    "\\|"
    "\\w\\{5,\\}=" ; A 5+-character word
    "\\)")
-  "Matches anything but 'lang'. See `vue3--tag-nolang-regex'.")
+  "Matches anything but `lang'. See `vue3--tag-nolang-regex'.")
 
 (defconst vue3--tag-lang-regex
   (concat "<%s"                               ; The tag name
