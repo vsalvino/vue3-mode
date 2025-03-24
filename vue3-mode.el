@@ -32,9 +32,6 @@
 (require 'polymode)
 (require 'vue-html-mode)
 
-(defvar vue3-initialized nil
-  "If false, `vue3-mode' still needs to prepare `polymode' before being activated.")
-
 (defconst vue3--not-lang-key
   (concat
    "\\(?:"
@@ -78,163 +75,156 @@ To be formatted with the tag name, and the language.")
   "A regular expression for the starting tags of template areas.
 To be formatted with the tag name.")
 
-(defun vue3--setup ()
-  "Add hooks to plymode for doing multiple major modes in a .vue file."
-  ;; Default mode is vue-html-mode. So we don't need to explictly
-  ;; create innermodes for most <template> tags.
-  (define-hostmode poly-vue3-hostmode
-    :mode 'vue-html-mode)
-  ;; <i18n> without lang specified.
-  (define-innermode vue3-i18n-innermode
-    :mode 'json-mode
-    :head-matcher (format vue3--tag-nolang-regex "i18n")
-    :tail-matcher "</i18n *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <i18n lang="json">
-  (define-innermode vue3-i18n-json-innermode
-    :mode 'json-mode
-    :head-matcher (format vue3--tag-lang-regex "i18n" "json")
-    :tail-matcher "</i18n *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <i18n lang="yaml">
-  (define-innermode vue3-i18n-yaml-innermode
-    :mode 'yaml-mode
-    :head-matcher (format vue3--tag-lang-regex "i18n" "yaml")
-    :tail-matcher "</i18n *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script> without lang specified.
-  (define-innermode vue3-script-innermode
-    :mode 'js-mode
-    :head-matcher (format vue3--tag-nolang-regex "script")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script lang="es6">
-  (define-innermode vue3-script-es6-innermode
-    :mode 'js-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "es6")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script lang="js">
-  (define-innermode vue3-script-js-innermode
-    :mode 'js-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "js")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-    ;; <script lang="javascript">
-  (define-innermode vue3-script-js-innermode
-    :mode 'js-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "js")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script lang="javascript">
-  (define-innermode vue3-script-javascript-innermode
-    :mode 'js-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "javascript")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script lang="ts">
-  (define-innermode vue3-script-ts-innermode
-    :mode 'typescript-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "ts")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script lang="tsx">
-  (define-innermode vue3-script-tsx-innermode
-    :mode 'typescript-tsx-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "tsx")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <script lang="typescript">
-  (define-innermode vue3-script-typescript-innermode
-    :mode 'typescript-mode
-    :head-matcher (format vue3--tag-lang-regex "script" "typescript")
-    :tail-matcher "</script *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <style> without lang specified.
-  (define-innermode vue3-style-innermode
-    :mode 'css-mode
-    :head-matcher (format vue3--tag-nolang-regex "style")
-    :tail-matcher "</style *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <style lang="css">
-  (define-innermode vue3-style-css-innermode
-    :mode 'css-mode
-    :head-matcher (format vue3--tag-lang-regex "style" "css")
-    :tail-matcher "</style *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <style lang="less">
-  (define-innermode vue3-style-less-innermode
-    :mode 'less-css-mode
-    :head-matcher (format vue3--tag-lang-regex "style" "less")
-    :tail-matcher "</style *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <style lang="scss">
-  (define-innermode vue3-style-scss-innermode
-    :mode 'scss-mode
-    :head-matcher (format vue3--tag-lang-regex "style" "scss")
-    :tail-matcher "</style *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <template lang="jade">
-  (define-innermode vue3-template-jade-innermode
-    :mode 'jade-mode
-    :head-matcher (format vue3--tag-lang-regex "template" "jade")
-    :tail-matcher "</template *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <template lang="pug">
-  (define-innermode vue3-template-pug-innermode
-    :mode 'pug-mode
-    :head-matcher (format vue3--tag-lang-regex "template" "pug")
-    :tail-matcher "</template *>"
-    :head-mode 'host
-    :tail-mode 'host)
-  ;; <template lang="sl[i]m">
-  (define-innermode vue3-template-slim-innermode
-    :mode 'slim-mode
-    :head-matcher (format vue3--tag-lang-regex "template" "sli*m")
-    :tail-matcher "</template *>"
-    :head-mode 'host
-    :tail-mode 'host)
+;; Default mode is vue-html-mode. So we don't need to explictly
+;; create innermodes for most <template> tags.
+(define-hostmode poly-vue3-hostmode
+  :mode 'vue-html-mode)
+;; <i18n> without lang specified.
+(define-innermode vue3-i18n-innermode
+  :mode 'json-mode
+  :head-matcher (format vue3--tag-nolang-regex "i18n")
+  :tail-matcher "</i18n *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <i18n lang="json">
+(define-innermode vue3-i18n-json-innermode
+  :mode 'json-mode
+  :head-matcher (format vue3--tag-lang-regex "i18n" "json")
+  :tail-matcher "</i18n *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <i18n lang="yaml">
+(define-innermode vue3-i18n-yaml-innermode
+  :mode 'yaml-mode
+  :head-matcher (format vue3--tag-lang-regex "i18n" "yaml")
+  :tail-matcher "</i18n *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script> without lang specified.
+(define-innermode vue3-script-innermode
+  :mode 'js-mode
+  :head-matcher (format vue3--tag-nolang-regex "script")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="es6">
+(define-innermode vue3-script-es6-innermode
+  :mode 'js-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "es6")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="js">
+(define-innermode vue3-script-js-innermode
+  :mode 'js-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "js")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="javascript">
+(define-innermode vue3-script-js-innermode
+  :mode 'js-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "js")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="javascript">
+(define-innermode vue3-script-javascript-innermode
+  :mode 'js-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "javascript")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="ts">
+(define-innermode vue3-script-ts-innermode
+  :mode 'typescript-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "ts")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="tsx">
+(define-innermode vue3-script-tsx-innermode
+  :mode 'typescript-tsx-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "tsx")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <script lang="typescript">
+(define-innermode vue3-script-typescript-innermode
+  :mode 'typescript-mode
+  :head-matcher (format vue3--tag-lang-regex "script" "typescript")
+  :tail-matcher "</script *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <style> without lang specified.
+(define-innermode vue3-style-innermode
+  :mode 'css-mode
+  :head-matcher (format vue3--tag-nolang-regex "style")
+  :tail-matcher "</style *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <style lang="css">
+(define-innermode vue3-style-css-innermode
+  :mode 'css-mode
+  :head-matcher (format vue3--tag-lang-regex "style" "css")
+  :tail-matcher "</style *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <style lang="less">
+(define-innermode vue3-style-less-innermode
+  :mode 'less-css-mode
+  :head-matcher (format vue3--tag-lang-regex "style" "less")
+  :tail-matcher "</style *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <style lang="scss">
+(define-innermode vue3-style-scss-innermode
+  :mode 'scss-mode
+  :head-matcher (format vue3--tag-lang-regex "style" "scss")
+  :tail-matcher "</style *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <template lang="jade">
+(define-innermode vue3-template-jade-innermode
+  :mode 'jade-mode
+  :head-matcher (format vue3--tag-lang-regex "template" "jade")
+  :tail-matcher "</template *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <template lang="pug">
+(define-innermode vue3-template-pug-innermode
+  :mode 'pug-mode
+  :head-matcher (format vue3--tag-lang-regex "template" "pug")
+  :tail-matcher "</template *>"
+  :head-mode 'host
+  :tail-mode 'host)
+;; <template lang="sl[i]m">
+(define-innermode vue3-template-slim-innermode
+  :mode 'slim-mode
+  :head-matcher (format vue3--tag-lang-regex "template" "sli*m")
+  :tail-matcher "</template *>"
+  :head-mode 'host
+  :tail-mode 'host)
 ;; Define vue3-mode as a composite of all modes above.
-  (define-polymode vue3-mode
-    :hostmode 'poly-vue3-hostmode
-    :innermodes '(vue3-i18n-innermode
-                  vue3-i18n-json-innermode
-                  vue3-i18n-yaml-innermode
-                  vue3-script-innermode
-                  vue3-script-js-innermode
-                  vue3-script-javascript-innermode
-                  vue3-script-ts-innermode
-                  vue3-script-tsx-innermode
-                  vue3-script-typescript-innermode
-                  vue3-style-innermode
-                  vue3-style-css-innermode
-                  vue3-style-less-innermode
-                  vue3-style-scss-innermode
-                  vue3-template-jade-innermode
-                  vue3-template-pug-innermode
-                  vue3-template-slim-innermode))
-  ;; Done.
-  (setq vue3-initialized t))
+(define-polymode vue3-mode
+  :hostmode 'poly-vue3-hostmode
+  :innermodes '(vue3-i18n-innermode
+                vue3-i18n-json-innermode
+                vue3-i18n-yaml-innermode
+                vue3-script-innermode
+                vue3-script-js-innermode
+                vue3-script-javascript-innermode
+                vue3-script-ts-innermode
+                vue3-script-tsx-innermode
+                vue3-script-typescript-innermode
+                vue3-style-innermode
+                vue3-style-css-innermode
+                vue3-style-less-innermode
+                vue3-style-scss-innermode
+                vue3-template-jade-innermode
+                vue3-template-pug-innermode
+                vue3-template-slim-innermode))
 
-;;;###autoload
-(when (not vue3-initialized)
-  (vue3--setup))
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.vue" . vue3-mode))
