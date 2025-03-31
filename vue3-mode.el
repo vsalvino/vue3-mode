@@ -4,7 +4,7 @@
 
 ;; Author: Vince Salvino <mvsalvino@gmail.com>
 ;; Keywords: languages, vue
-;; Package-Requires: ((emacs "24.1") (polymode "0.2.2") (vue-html-mode "0.2"))
+;; Package-Requires: ((emacs "29.1") (polymode "0.2.2") (vue-html-mode "0.2"))
 ;; URL: https://github.com/vsalvino/vue3-mode
 ;; Version: 1.0
 
